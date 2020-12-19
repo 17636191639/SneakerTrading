@@ -72,7 +72,7 @@ public:
 
     static void modifyShoesInfoStoreID(QString id, QString storeID);
     static void modifyShoesInfoShoesName(QString id, QString shoesName);
-
+    static void modifyShoesInfoBottomPrice(QString id, QString bottomPrice);
     static void modifyShoesInfoFreight(QString id, QString freight);
 
     static void insertShoesInfo(ShoesInfo info);

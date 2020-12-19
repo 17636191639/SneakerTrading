@@ -16,6 +16,7 @@ enum SearchCondition
     SearchId,
     SearchStoreID,
     SearchName,
+    SearchBottomPrice,
     SearchFreight
 };
 enum OperationType

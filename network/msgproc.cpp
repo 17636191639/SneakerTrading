@@ -54,6 +54,7 @@ void MsgProc::parseBuyerGetShoes(QString data)
                     + GlobalVars::g_shoesInfoList->at(i).getID()
                     + QString("&") + GlobalVars::g_shoesInfoList->at(i).getStoreID()
                     + QString("&") + GlobalVars::g_shoesInfoList->at(i).getShoesName()
+                    + QString("&") + GlobalVars::g_shoesInfoList->at(i).getBottomPrice()
                     + QString("&") + GlobalVars::g_shoesInfoList->at(i).getFreight();
         }
         emit signalSendMsgToClient(buyerID, msg);

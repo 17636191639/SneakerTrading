@@ -5,16 +5,16 @@ ShoesInfo::ShoesInfo()
     m_id.clear();
     m_storeID.clear();
     m_shoesName.clear();
-
+    m_bottomPrice.clear();
     m_freight.clear();
 }
 ShoesInfo::ShoesInfo(const QString &id, const QString &storeID,
-                     const QString &shoesName, const QString &freight)
+                     const QString &shoesName,const QString &bottomPrice, const QString &freight)
 {
     m_id = id;
     m_storeID = storeID;
     m_shoesName = shoesName;
-
+    m_bottomPrice = bottomPrice;
     m_freight = freight;
 }
 
@@ -33,6 +33,10 @@ void ShoesInfo::setShoesName(const QString &shoesName)
     m_shoesName = shoesName;
 
 }
+void ShoesInfo::setBottomPrice(const QString &bottomPrice)
+{
+    m_bottomPrice = bottomPrice;
+}
 
 void ShoesInfo::setFreight(const QString &freight)
 {
@@ -50,6 +54,10 @@ const QString &ShoesInfo::getStoreID(void) const
 const QString &ShoesInfo::getShoesName(void) const
 {
     return m_shoesName;
+}
+const QString &ShoesInfo::getBottomPrice(void) const
+{
+    return m_bottomPrice;
 }
 
 const QString &ShoesInfo::getFreight(void) const

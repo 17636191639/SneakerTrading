@@ -59,6 +59,11 @@
           </item>
           <item>
            <property name="text">
+            <string>最低价格</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
             <string>邮费</string>
            </property>
           </item>
@@ -132,50 +137,6 @@
      <layout class="QGridLayout" name="gridLayout_5">
       <item row="0" column="0">
        <layout class="QGridLayout" name="gridLayout_4">
-        <item row="0" column="0" colspan="5">
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>编号：</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="le_id"/>
-          </item>
-          <item row="0" column="2">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>店铺ID：</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="QLineEdit" name="le_storeid"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>商品名称：</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="le_name"/>
-          </item>
-          <item row="1" column="2">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>运费：</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <widget class="QLineEdit" name="le_freight"/>
-          </item>
-         </layout>
-        </item>
         <item row="1" column="0">
          <widget class="QPushButton" name="pb_modify">
           <property name="text">
@@ -222,6 +183,60 @@
            <string>确定</string>
           </property>
          </widget>
+        </item>
+        <item row="0" column="0" colspan="5">
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>编号：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="le_id"/>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>店铺ID：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QLineEdit" name="le_storeid"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>最低价格：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="le_bottomprice"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>运费：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QLineEdit" name="le_freight"/>
+          </item>
+          <item row="0" column="5" rowspan="2">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>商品名称：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="6" rowspan="2">
+           <widget class="QLineEdit" name="le_name"/>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>

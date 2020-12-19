@@ -307,6 +307,7 @@ void ExecSQL::updateShoesInfoList(QString sql)
         int index_id = query.record().indexOf("id");
         int index_storeID = query.record().indexOf("store_id");
         int index_name = query.record().indexOf("name");
+        int index_bottom = query.record().indexOf("bottom_price");
         int index_freight = query.record().indexOf("freight");
 
         while(query.next())
@@ -314,9 +315,10 @@ void ExecSQL::updateShoesInfoList(QString sql)
             QString id = query.value(index_id).toString();
             QString storeID = query.value(index_storeID).toString();
             QString name = query.value(index_name).toString();
+            QString bottomPrice = query.value(index_bottom).toString();
             QString freight = query.value(index_freight).toString();
 
-            ShoesInfo info(id, storeID, name, freight);
+            ShoesInfo info(id, storeID, name, bottomPrice, freight);
             GlobalVars::g_shoesInfoList->append(info);
 
             //qDebug() << id << ", " << storeID << ", " << name << ", " << freight;
@@ -345,7 +347,12 @@ void ExecSQL::selectShoesInfoForShoesName(QString name)
     QString mysql = sql.arg(name);
     updateShoesInfoList(mysql);
 }
-
+void ExecSQL::selectShoesInfoForBottomPrice(QString bottomPrice)
+{
+    QString sql = QString("select * from shoes_info where bottom_price = '%1'");
+    QString mysql = sql.arg(bottomPrice);
+    updateShoesInfoList(mysql);
+}
 void ExecSQL::selectShoesInfoForFreight(QString freight)
 {
     QString sql = QString("select * from shoes_info where freight = '%1'");
@@ -365,7 +372,12 @@ void ExecSQL::modifyShoesInfoShoesName(QString id, QString shoesName)
     QString mysql = sql.arg(shoesName).arg(id);
     updateShoesInfoList(mysql);
 }
-
+void ExecSQL::modifyShoesInfoBottomPrice(QString id, QString bottomPrice)
+{
+    QString sql = QString("update shoes_info set name = '%1' where bottom_price = '%2';");
+    QString mysql = sql.arg(bottomPrice).arg(id);
+    updateShoesInfoList(mysql);
+}
 void ExecSQL::modifyShoesInfoFreight(QString id, QString freight)
 {
     QString sql = QString("update shoes_info set freight = '%1' where id = '%2';");
@@ -376,7 +388,8 @@ void ExecSQL::modifyShoesInfoFreight(QString id, QString freight)
 void ExecSQL::insertShoesInfo(ShoesInfo info)
 {
     QString ShoesInfoInsert = QString("insert into shoes_info values('%1','%2','%3','%4');");
-    QString ShoesInfoInsertSql = ShoesInfoInsert.arg(info.getID()).arg(info.getStoreID()).arg(info.getShoesName()).arg(info.getFreight());
+    QString ShoesInfoInsertSql = ShoesInfoInsert.arg(info.getID()).arg(info.getStoreID())
+            .arg(info.getShoesName()).arg(info.getBottomPrice()).arg(info.getFreight());
 
     updateShoesInfoList(ShoesInfoInsertSql);
 }
