@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/1 (7).png</file>
+        <file>icons/1 (8).png</file>
+        <file>icons/Message.png</file>
+        <file>icons/orderMS.png</file>
+        <file>icons/store.png</file>
+        <file>icons/购物车.png</file>
+        <file>icons/权限管理.png</file>
+        <file>icons/人员管理.png</file>
+        <file>icons/Buyer.png</file>
+        <file>icons/Details.png</file>
+        <file>icons/Evaluation.png</file>
+        <file>icons/message-circle.png</file>
+        <file>icons/orderMS2.png</file>
+        <file>icons/shoes.png</file>
+        <file>icons/ShoesDetails.png</file>
+        <file>icons/store2.png</file>
+        <file>icons/users.png</file>
+        <file>icons/photo (1).png</file>
+        <file>icons/photo (2).png</file>
+    </qresource>
+</RCC>

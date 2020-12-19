@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1076</width>
+    <height>665</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QWidget" name="widget" native="true"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1076</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuUserMS">
+    <property name="title">
+     <string>MS</string>
+    </property>
+    <addaction name="actionUserMS"/>
+    <addaction name="actionSellerMS"/>
+    <addaction name="actionBuyerMS"/>
+    <addaction name="actionShoesMS"/>
+    <addaction name="actionStoreMS"/>
+    <addaction name="actionOrderMS"/>
+    <addaction name="actionEvaluationMS"/>
+    <addaction name="actionShopCart"/>
+    <addaction name="actionChatMS"/>
+    <addaction name="actionShoesDetailsMS"/>
+    <addaction name="actionPhotoMS"/>
+   </widget>
+   <addaction name="menuUserMS"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>80</width>
+     <height>50</height>
+    </size>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>BottomToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionUserMS"/>
+   <addaction name="actionSellerMS"/>
+   <addaction name="actionBuyerMS"/>
+   <addaction name="actionShoesMS"/>
+   <addaction name="actionStoreMS"/>
+   <addaction name="actionShopCart"/>
+   <addaction name="actionOrderMS"/>
+   <addaction name="actionShoesDetailsMS"/>
+   <addaction name="actionEvaluationMS"/>
+   <addaction name="actionChatMS"/>
+   <addaction name="actionPhotoMS"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionSellerMS">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/人员管理.png</normaloff>:/icons/人员管理.png</iconset>
+   </property>
+   <property name="text">
+    <string>SellerMS</string>
+   </property>
+  </action>
+  <action name="actionBuyerMS">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Buyer.png</normaloff>:/icons/Buyer.png</iconset>
+   </property>
+   <property name="text">
+    <string>BuyerMS</string>
+   </property>
+  </action>
+  <action name="actionShoesMS">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/shoes.png</normaloff>:/icons/shoes.png</iconset>
+   </property>
+   <property name="text">
+    <string>ShoesMS</string>
+   </property>
+  </action>
+  <action name="actionOrderMS">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/orderMS2.png</normaloff>:/icons/orderMS2.png</iconset>
+   </property>
+   <property name="text">
+    <string>OrderMS</string>
+   </property>
+  </action>
+  <action name="actionEvaluationMS">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Evaluation.png</normaloff>:/icons/Evaluation.png</iconset>
+   </property>
+   <property name="text">
+    <string>EvaluationMS</string>
+   </property>
+  </action>
+  <action name="actionUserMS">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/权限管理.png</normaloff>:/icons/权限管理.png</iconset>
+   </property>
+   <property name="text">
+    <string>UserMS</string>
+   </property>
+  </action>
+  <action name="actionStoreMS">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/store2.png</normaloff>:/icons/store2.png</iconset>
+   </property>
+   <property name="text">
+    <string>StoreMS</string>
+   </property>
+  </action>
+  <action name="actionShopCart">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/购物车.png</normaloff>:/icons/购物车.png</iconset>
+   </property>
+   <property name="text">
+    <string>ShopCartMS</string>
+   </property>
+  </action>
+  <action name="actionChatMS">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Message.png</normaloff>:/icons/Message.png</iconset>
+   </property>
+   <property name="text">
+    <string>ChatMS</string>
+   </property>
+  </action>
+  <action name="actionShoesDetailsMS">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/ShoesDetails.png</normaloff>:/icons/ShoesDetails.png</iconset>
+   </property>
+   <property name="text">
+    <string>ShoesDetailsMS</string>
+   </property>
+  </action>
+  <action name="actionPhotoMS">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/photo (1).png</normaloff>:/icons/photo (1).png</iconset>
+   </property>
+   <property name="text">
+    <string>PhotoMS</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>
