@@ -1,4 +1,4 @@
-#ifndef SHOESMS_H
+﻿#ifndef SHOESMS_H
 #define SHOESMS_H
 
 #include <QWidget>
@@ -15,6 +15,7 @@ enum SearchCondition
     SearchNone = 0,
     SearchId,
     SearchStoreID,
+    SearchPhotoID,
     SearchName,
     SearchBottomPrice,
     SearchFreight

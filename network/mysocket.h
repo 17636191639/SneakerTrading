@@ -1,4 +1,4 @@
-#ifndef MYSOCKET_H
+﻿#ifndef MYSOCKET_H
 #define MYSOCKET_H
 
 #include <QObject>
@@ -14,6 +14,7 @@ signals:
 public slots:
     void slotReadyRead();
     bool slotSendMsg(QString msg);
+    bool slotSendPhoto(void);
 
 public:
     explicit MySocket(QTcpSocket *socket, QObject *parent = 0);

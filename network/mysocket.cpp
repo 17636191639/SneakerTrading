@@ -1,8 +1,10 @@
-#include "mysocket.h"
+﻿#include "mysocket.h"
 #include <QMap>
 #include <QDataStream>
 #include <QDebug>
 #include "globalvars.h"
+#include <QBuffer>
+#include <QImage>
 
 MySocket::MySocket(QTcpSocket *socket, QObject *parent) : QObject(parent)
 {
@@ -25,7 +27,7 @@ void MySocket::slotReadyRead()
 
     if(m_tcpBlockSize == 0)
     {
-        if(m_socket->bytesAvailable()<sizeof(quint16))
+        if(m_socket->bytesAvailable() < sizeof(quint16))
             return;
 
         in >> m_tcpBlockSize;
@@ -36,7 +38,6 @@ void MySocket::slotReadyRead()
 
     QString msg;
     in >> msg;
-
 
     if(msg.at(0) == CMD_UserLogin_L)
     {
@@ -52,20 +53,7 @@ void MySocket::slotReadyRead()
     m_tcpBlockSize = 0;
 }
 
-bool MySocket::slotSendMsg(QString msg)
-{
-    QByteArray buffer;
-    QDataStream out(&buffer, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_4_6);
 
-    out << (quint16)0;
-    out << msg;
-    out.device()->seek(0);
-    out << (quint16)(buffer.size() - sizeof(quint16));
-
-    qDebug() << "Server Send: " << msg;
-    return m_socket->write(buffer);
-}
 void MySocket::parseUserLogin(QString msg)
 {
     qDebug() << "MySocket::parseUserLogin" << msg;
@@ -97,5 +85,59 @@ void MySocket::parseUserLogin(QString msg)
 }
 void MySocket::parseUserExit(QString msg)
 {
+
+}
+bool MySocket::slotSendMsg(QString msg)
+{
+    QByteArray buffer;
+    QDataStream out(&buffer, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_4_6);
+
+    out << (quint16)0;
+    out << msg;
+    out.device()->seek(0);
+    out << (quint16)(buffer.size() - sizeof(quint16));
+
+    qDebug() << "Server Send: " << msg;
+    return m_socket->write(buffer);
+}
+bool MySocket::slotSendPhoto(void)
+{
+
+    QString msg = QString(CMD_GetShoesPhoto_A) + QString("#!");   //合成消息
+    msg += QString("|")
+            + GlobalVars::g_photoInfoList->at(0).getID()
+            + QString("&") + GlobalVars::g_photoInfoList->at(0).getPhotoCount()
+            + QString("&") + GlobalVars::g_photoInfoList->at(0).getPhotoPath();
+    QString imgPath = GlobalVars::g_photoInfoList->at(0).getPhotoPath() +
+                                    GlobalVars::g_photoInfoList->at(0).getID() + QString(" (1).jpg");
+    QImage img;
+    bool loadImg = img.load(imgPath);
+
+    if(loadImg)
+    {
+        qDebug() << "img size: " << img.size();
+        QByteArray buffer;
+        QDataStream out(&buffer, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_4_6);
+
+        out << (quint16)0;
+        out << msg;  //将命令流入
+
+
+        QBuffer b;
+        b.open(QIODevice::ReadWrite);
+        img.save(&b,"jpg");
+
+        out << b.data();
+
+        out.device()->seek(0);
+        out << (quint16)(buffer.size() - sizeof(quint16));  //将数据大小流入
+        qDebug() << "buffer size：" << buffer.size();
+        qDebug() << "photo size: " << b.size();
+        m_socket->write(buffer);
+    }
+
+
 
 }

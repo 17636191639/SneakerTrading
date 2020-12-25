@@ -8,3 +8,4 @@ HEADERS += \
 SOURCES += \
     $$PWD/connectsql.cpp \
     $$PWD/execsql.cpp
+

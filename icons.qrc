@@ -19,5 +19,20 @@
         <file>icons/users.png</file>
         <file>icons/photo (1).png</file>
         <file>icons/photo (2).png</file>
+        <file>icons/店铺管理 (1).png</file>
+        <file>icons/店铺管理.png</file>
+        <file>icons/订单 (1).png</file>
+        <file>icons/订单.png</file>
+        <file>icons/个人中心.png</file>
+        <file>icons/购物车 (1).png</file>
+        <file>icons/联系卖家-订单详情.png</file>
+        <file>icons/聊天, chat.png</file>
+        <file>icons/买家管理.png</file>
+        <file>icons/卖家.png</file>
+        <file>icons/评价管理.png</file>
+        <file>icons/图片.png</file>
+        <file>icons/鞋.png</file>
+        <file>icons/用户管理.png</file>
+        <file>icons/ShoesDetailsColor.png</file>
     </qresource>
 </RCC>

@@ -1,4 +1,4 @@
-#include "execsql.h"
+﻿#include "execsql.h"
 #include <QSqlQuery>    ///sql询问类，提供数据库的语句执行
 #include <QDebug>
 #include <QSqlRecord>
@@ -10,6 +10,7 @@ void ExecSQL::selectAllUsers(void)
     QString sql = QString("select * from user_info");
     updateUserInfoList(sql);
 }
+
 void ExecSQL::updateUserInfoList(QString sql)
 {
     GlobalVars::g_userInfoList->clear();
@@ -306,6 +307,7 @@ void ExecSQL::updateShoesInfoList(QString sql)
     {
         int index_id = query.record().indexOf("id");
         int index_storeID = query.record().indexOf("store_id");
+        int index_photoID = query.record().indexOf("photo_id");
         int index_name = query.record().indexOf("name");
         int index_bottom = query.record().indexOf("bottom_price");
         int index_freight = query.record().indexOf("freight");
@@ -314,11 +316,12 @@ void ExecSQL::updateShoesInfoList(QString sql)
         {
             QString id = query.value(index_id).toString();
             QString storeID = query.value(index_storeID).toString();
+            QString photoID = query.value(index_photoID).toString();
             QString name = query.value(index_name).toString();
             QString bottomPrice = query.value(index_bottom).toString();
             QString freight = query.value(index_freight).toString();
 
-            ShoesInfo info(id, storeID, name, bottomPrice, freight);
+            ShoesInfo info(id, storeID, photoID, name, bottomPrice, freight);
             GlobalVars::g_shoesInfoList->append(info);
 
             //qDebug() << id << ", " << storeID << ", " << name << ", " << freight;
@@ -339,6 +342,12 @@ void ExecSQL::selectShoesInfoForStoreID(QString store_id)
 {
     QString sql = QString("select * from shoes_info where shore_id = '%1'");
     QString mysql = sql.arg(store_id);
+    updateShoesInfoList(mysql);
+}
+void ExecSQL::selectShoesInfoForPhotoID(QString photoID)
+{
+    QString sql = QString("select * from shoes_info where photo_id = '%1'");
+    QString mysql = sql.arg(photoID);
     updateShoesInfoList(mysql);
 }
 void ExecSQL::selectShoesInfoForShoesName(QString name)
@@ -366,6 +375,12 @@ void ExecSQL::modifyShoesInfoStoreID(QString id, QString storeID)
     QString mysql = sql.arg(storeID).arg(id);
     updateShoesInfoList(mysql);
 }
+void ExecSQL::modifyShoesInfoPhotoID(QString id, QString photoID)
+{
+    QString sql = QString("update shoes_info set photo_id = '%1' where id = '%2';");
+    QString mysql = sql.arg(photoID).arg(id);
+    updateShoesInfoList(mysql);
+}
 void ExecSQL::modifyShoesInfoShoesName(QString id, QString shoesName)
 {
     QString sql = QString("update shoes_info set name = '%1' where id = '%2';");
@@ -387,8 +402,8 @@ void ExecSQL::modifyShoesInfoFreight(QString id, QString freight)
 
 void ExecSQL::insertShoesInfo(ShoesInfo info)
 {
-    QString ShoesInfoInsert = QString("insert into shoes_info values('%1','%2','%3','%4');");
-    QString ShoesInfoInsertSql = ShoesInfoInsert.arg(info.getID()).arg(info.getStoreID())
+    QString ShoesInfoInsert = QString("insert into shoes_info values('%1','%2','%3','%4','%5','%6');");
+    QString ShoesInfoInsertSql = ShoesInfoInsert.arg(info.getID()).arg(info.getStoreID()).arg(info.getPhotoID())
             .arg(info.getShoesName()).arg(info.getBottomPrice()).arg(info.getFreight());
 
     updateShoesInfoList(ShoesInfoInsertSql);

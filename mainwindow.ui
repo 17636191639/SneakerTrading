@@ -82,7 +82,7 @@
   <action name="actionSellerMS">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/人员管理.png</normaloff>:/icons/人员管理.png</iconset>
+     <normaloff>:/icons/卖家.png</normaloff>:/icons/卖家.png</iconset>
    </property>
    <property name="text">
     <string>SellerMS</string>
@@ -91,7 +91,7 @@
   <action name="actionBuyerMS">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/Buyer.png</normaloff>:/icons/Buyer.png</iconset>
+     <normaloff>:/icons/买家管理.png</normaloff>:/icons/买家管理.png</iconset>
    </property>
    <property name="text">
     <string>BuyerMS</string>
@@ -100,7 +100,7 @@
   <action name="actionShoesMS">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/shoes.png</normaloff>:/icons/shoes.png</iconset>
+     <normaloff>:/icons/鞋.png</normaloff>:/icons/鞋.png</iconset>
    </property>
    <property name="text">
     <string>ShoesMS</string>
@@ -109,7 +109,7 @@
   <action name="actionOrderMS">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/orderMS2.png</normaloff>:/icons/orderMS2.png</iconset>
+     <normaloff>:/icons/订单.png</normaloff>:/icons/订单.png</iconset>
    </property>
    <property name="text">
     <string>OrderMS</string>
@@ -118,7 +118,7 @@
   <action name="actionEvaluationMS">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/Evaluation.png</normaloff>:/icons/Evaluation.png</iconset>
+     <normaloff>:/icons/评价管理.png</normaloff>:/icons/评价管理.png</iconset>
    </property>
    <property name="text">
     <string>EvaluationMS</string>
@@ -127,7 +127,7 @@
   <action name="actionUserMS">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/权限管理.png</normaloff>:/icons/权限管理.png</iconset>
+     <normaloff>:/icons/用户管理.png</normaloff>:/icons/用户管理.png</iconset>
    </property>
    <property name="text">
     <string>UserMS</string>
@@ -136,7 +136,7 @@
   <action name="actionStoreMS">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/store2.png</normaloff>:/icons/store2.png</iconset>
+     <normaloff>:/icons/店铺管理 (1).png</normaloff>:/icons/店铺管理 (1).png</iconset>
    </property>
    <property name="text">
     <string>StoreMS</string>
@@ -154,7 +154,7 @@
   <action name="actionChatMS">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/Message.png</normaloff>:/icons/Message.png</iconset>
+     <normaloff>:/icons/聊天, chat.png</normaloff>:/icons/聊天, chat.png</iconset>
    </property>
    <property name="text">
     <string>ChatMS</string>
@@ -172,7 +172,7 @@
   <action name="actionPhotoMS">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/photo (1).png</normaloff>:/icons/photo (1).png</iconset>
+     <normaloff>:/icons/图片.png</normaloff>:/icons/图片.png</iconset>
    </property>
    <property name="text">
     <string>PhotoMS</string>

@@ -1,5 +1,6 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "globalvars.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -19,7 +20,14 @@ MainWindow::MainWindow(QWidget *parent) :
     m_chatMS = new ChatMS(ui->widget);
     m_photoMS = new PhotoMS(ui->widget);
 
-    m_myServer = new MyServer;
+    //m_myServer = new MyServer;
+    m_myProc = new MsgProc;
+    connect(m_myProc, SIGNAL(signalSendMsgToClient(QString,QString)),
+            this, SLOT(slotSendMsgToClient(QString,QString)));
+    connect(m_myProc, SIGNAL(signalSendPhotoToClient(QString)),
+            this, SLOT(slotSendPhotoToClient(QString)));
+    m_myProc->start();
+
     menuBar()->hide();
     statusBar()->hide();
     this->setWindowTitle("麦孩后台管理系统");
@@ -53,6 +61,11 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    m_myProc->exitThread();
+    if(m_myProc->wait())
+    {
+        delete m_myProc;
+    }
 }
 
 void MainWindow::on_actionShoesMS_triggered()
@@ -340,4 +353,22 @@ void MainWindow::on_actionPhotoMS_triggered()
     ui->actionEvaluationMS->setEnabled(true);
     ui->actionChatMS->setEnabled(true);
     ui->actionPhotoMS->setEnabled(false);////
+}
+void MainWindow::slotSendMsgToClient(QString id, QString msg)
+{
+
+    if(GlobalVars::m_socketMap.contains(id))
+    {
+        GlobalVars::m_socketMap[id]->slotSendMsg(msg);
+    }
+
+
+}
+void MainWindow::slotSendPhotoToClient(QString id)
+{
+    if(GlobalVars::m_socketMap.contains(id))
+    {
+        GlobalVars::m_socketMap[id]->slotSendPhoto();
+    }
+
 }

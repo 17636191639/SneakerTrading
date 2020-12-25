@@ -1,4 +1,4 @@
-#ifndef EXECSQL_H
+﻿#ifndef EXECSQL_H
 #define EXECSQL_H
 #include "userinfo.h"
 #include "buyerinfo.h"
@@ -66,11 +66,13 @@ public:
     static void selectAllShoes(void);
     static void selectShoesInfoForID(QString);
     static void selectShoesInfoForStoreID(QString);
+    static void selectShoesInfoForPhotoID(QString);
     static void selectShoesInfoForShoesName(QString);
     static void selectShoesInfoForBottomPrice(QString);
     static void selectShoesInfoForFreight(QString);
 
     static void modifyShoesInfoStoreID(QString id, QString storeID);
+    static void modifyShoesInfoPhotoID(QString id, QString photoID);
     static void modifyShoesInfoShoesName(QString id, QString shoesName);
     static void modifyShoesInfoBottomPrice(QString id, QString bottomPrice);
     static void modifyShoesInfoFreight(QString id, QString freight);

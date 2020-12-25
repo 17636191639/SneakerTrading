@@ -1,9 +1,9 @@
-#ifndef MYSERVER_H
+﻿#ifndef MYSERVER_H
 #define MYSERVER_H
 #include <QObject>
 #include <QTcpServer>
 #include "mysocket.h"
-#include "msgproc.h"
+//#include "msgproc.h"
 
 class MyServer : public QObject
 {
@@ -12,7 +12,7 @@ public slots:
     void slotNewConnection();
     void slotRegisterSocket(QString id, MySocket *socket);
     void slotLogoutSocket(QString id, MySocket *socket);
-    void slotSendMsgToClient(QString id, QString msg);
+
 
 public:
     explicit MyServer(QObject *parent = 0);
@@ -20,7 +20,7 @@ public:
 
 private:
     QTcpServer *m_server;
-    MsgProc *m_msgProc;
-    SocketMap m_socketMap;
+    //MsgProc *m_msgProc;
+
 };
 #endif // MYSERVER_H

@@ -1,5 +1,5 @@
-#include "globalvars.h"
-
+﻿#include "globalvars.h"
+SocketMap GlobalVars::m_socketMap;
 QQueue<QString> GlobalVars::g_msgQueue;
 
 BuyerInfoList *GlobalVars::g_buyerInfoList = new BuyerInfoList;

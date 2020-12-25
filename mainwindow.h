@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -14,6 +14,7 @@
 #include "chatms.h"
 #include "photoms.h"
 #include "myserver.h"
+#include "msgproc.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,7 +27,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
+public slots:
+    void slotSendMsgToClient(QString id, QString msg);
+    void slotSendPhotoToClient(QString id);
 private slots:
     void on_actionShoesMS_triggered();
 
@@ -64,7 +67,8 @@ private:
     EvaluationMS *m_evaluationMS;
     ChatMS *m_chatMS;
     PhotoMS *m_photoMS;
-    MyServer *m_myServer;
+    //MyServer *m_myServer;
+    MsgProc *m_myProc;
 };
 
 #endif // MAINWINDOW_H

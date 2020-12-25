@@ -1,4 +1,4 @@
-#include "shoesms.h"
+﻿#include "shoesms.h"
 #include "ui_shoesms.h"
 #include "globalvars.h"
 #include "execsql.h"
@@ -15,6 +15,7 @@ ShoesMS::ShoesMS(QWidget *parent) :
 
     ui->le_id->setEnabled(false);
     ui->le_storeid->setEnabled(false);
+    ui->le_photoid->setEnabled(false);
     ui->le_name->setEnabled(false);
     ui->le_bottomprice->setEnabled(false);
     ui->le_freight->setEnabled(false);
@@ -36,14 +37,14 @@ void ShoesMS::updateTableInfo(void)
 {
     //设置表格行列
     ui->tableWidget->clear();
-    ui->tableWidget->setColumnCount(5);  //设置列数
+    ui->tableWidget->setColumnCount(6);  //设置列数
     ui->tableWidget->setRowCount(GlobalVars::g_shoesInfoList->count()); //设置行数
 
     //设置表头信息
     QStringList headers;
-    headers << "商品编号" << "店铺编号" << "商品名称" << "最低价格" << "运费";
+    headers << "商品编号" << "店铺编号" << "图片编号" << "商品名称" << "最低价格" << "运费" ;
     ui->tableWidget->setHorizontalHeaderLabels(headers);
-    ui->tableWidget->setColumnWidth(2, 300);
+    ui->tableWidget->setColumnWidth(3, 300);
     for(int i = 0; i < GlobalVars::g_shoesInfoList->count(); i++)
     {
         //每个表格的小框相当于一个小界面
@@ -51,12 +52,14 @@ void ShoesMS::updateTableInfo(void)
         ui->tableWidget->setItem(i, 0, item);    //setItem(行, 列, item);
         item = new QTableWidgetItem(GlobalVars::g_shoesInfoList->at(i).getStoreID());
         ui->tableWidget->setItem(i, 1, item);
-        item = new QTableWidgetItem(GlobalVars::g_shoesInfoList->at(i).getShoesName());
+        item = new QTableWidgetItem(GlobalVars::g_shoesInfoList->at(i).getPhotoID());
         ui->tableWidget->setItem(i, 2, item);
-        item = new QTableWidgetItem(GlobalVars::g_shoesInfoList->at(i).getBottomPrice());
+        item = new QTableWidgetItem(GlobalVars::g_shoesInfoList->at(i).getShoesName());
         ui->tableWidget->setItem(i, 3, item);
-        item = new QTableWidgetItem(GlobalVars::g_shoesInfoList->at(i).getFreight());
+        item = new QTableWidgetItem(GlobalVars::g_shoesInfoList->at(i).getBottomPrice());
         ui->tableWidget->setItem(i, 4, item);
+        item = new QTableWidgetItem(GlobalVars::g_shoesInfoList->at(i).getFreight());
+        ui->tableWidget->setItem(i, 5, item);
     }
 }
 
@@ -80,6 +83,12 @@ void ShoesMS::on_pb_search_clicked()
     }else if(m_searchCondition == SearchId)
     {
         ExecSQL::selectShoesInfoForID(ui->le_condition->text());
+    }else if(m_searchCondition == SearchStoreID)
+    {
+        ExecSQL::selectShoesInfoForStoreID(ui->le_condition->text());
+    }else if(m_searchCondition == SearchPhotoID)
+    {
+        ExecSQL::selectShoesInfoForPhotoID(ui->le_condition->text());
     }else if(m_searchCondition == SearchName)
     {
         ExecSQL::selectShoesInfoForShoesName(ui->le_condition->text());
@@ -98,6 +107,7 @@ void ShoesMS::on_tableWidget_clicked(const QModelIndex &index)
     m_operationIndex = index;
     ui->le_id->setText(GlobalVars::g_shoesInfoList->at(index.row()).getID());
     ui->le_storeid->setText(GlobalVars::g_shoesInfoList->at(index.row()).getStoreID());
+    ui->le_photoid->setText(GlobalVars::g_shoesInfoList->at(index.row()).getPhotoID());
     ui->le_name->setText(GlobalVars::g_shoesInfoList->at(index.row()).getShoesName());
     ui->le_bottomprice->setText(GlobalVars::g_shoesInfoList->at(index.row()).getBottomPrice());
     ui->le_freight->setText(GlobalVars::g_shoesInfoList->at(index.row()).getFreight());
@@ -108,6 +118,7 @@ void ShoesMS::on_pb_modify_clicked()
     m_operationType = operationModify;
     ui->le_id->setEnabled(false);
     ui->le_storeid->setEnabled(true);
+    ui->le_photoid->setEnabled(true);
     ui->le_name->setEnabled(true);
     ui->le_bottomprice->setEnabled(true);
     ui->le_freight->setEnabled(true);
@@ -124,6 +135,7 @@ void ShoesMS::on_pb_delete_clicked()
     m_operationType = operationDel;
     ui->le_id->setEnabled(false);
     ui->le_storeid->setEnabled(false);
+    ui->le_photoid->setEnabled(false);
     ui->le_name->setEnabled(false);
     ui->le_bottomprice->setEnabled(false);
     ui->le_freight->setEnabled(false);
@@ -140,6 +152,7 @@ void ShoesMS::on_pb_add_clicked()
     m_operationType = operationAdd;
     ui->le_id->setEnabled(true);
     ui->le_storeid->setEnabled(true);
+    ui->le_photoid->setEnabled(true);
     ui->le_name->setEnabled(true);
     ui->le_bottomprice->setEnabled(true);
     ui->le_freight->setEnabled(true);
@@ -155,12 +168,14 @@ void ShoesMS::on_pb_cancel_clicked()
     m_operationType = operationNone;
     ui->le_id->setText(GlobalVars::g_shoesInfoList->at(m_operationIndex.row()).getID());
     ui->le_storeid->setText(GlobalVars::g_shoesInfoList->at(m_operationIndex.row()).getStoreID());
+    ui->le_photoid->setText(GlobalVars::g_shoesInfoList->at(m_operationIndex.row()).getPhotoID());
     ui->le_name->setText(GlobalVars::g_shoesInfoList->at(m_operationIndex.row()).getShoesName());
     ui->le_bottomprice->setText(GlobalVars::g_shoesInfoList->at(m_operationIndex.row()).getBottomPrice());
     ui->le_freight->setText(GlobalVars::g_shoesInfoList->at(m_operationIndex.row()).getFreight());
 
     ui->le_id->setEnabled(false);
     ui->le_storeid->setEnabled(false);
+    ui->le_photoid->setEnabled(false);
     ui->le_name->setEnabled(false);
     ui->le_bottomprice->setEnabled(false);
     ui->le_freight->setEnabled(false);
@@ -184,7 +199,8 @@ void ShoesMS::on_pb_ensure_clicked()
         m_operationIndex = ui->tableWidget->indexAt(QPoint(1,1));
     }else if(m_operationType == operationAdd)
     {
-        ShoesInfo info(ui->le_id->text(),ui->le_storeid->text(),ui->le_name->text(),ui->le_bottomprice->text(),ui->le_freight->text());
+        ShoesInfo info(ui->le_id->text(), ui->le_storeid->text(), ui->le_photoid->text(),
+                       ui->le_name->text(), ui->le_bottomprice->text(), ui->le_freight->text());
         ExecSQL::insertShoesInfo(info);
         on_pb_search_clicked();
     }else if(m_operationType == operationModify)
@@ -198,6 +214,11 @@ void ShoesMS::on_pb_ensure_clicked()
         if(ui->le_storeid->text() != GlobalVars::g_shoesInfoList->at(row).getStoreID())
         {
             ExecSQL::modifyShoesInfoStoreID(ui->le_id->text(),ui->le_storeid->text());
+            ExecSQL::selectAllShoes();
+        }
+        if(ui->le_photoid->text() != GlobalVars::g_shoesInfoList->at(row).getPhotoID())
+        {
+            ExecSQL::modifyShoesInfoPhotoID(ui->le_id->text(),ui->le_photoid->text());
             ExecSQL::selectAllShoes();
         }
         if(ui->le_bottomprice->text() != GlobalVars::g_shoesInfoList->at(row).getBottomPrice())
@@ -223,6 +244,7 @@ void ShoesMS::on_pb_ensure_clicked()
 
     ui->le_id->setEnabled(false);
     ui->le_storeid->setEnabled(false);
+    ui->le_photoid->setEnabled(false);
     ui->le_name->setEnabled(false);
     ui->le_bottomprice->setEnabled(false);
     ui->le_freight->setEnabled(false);
