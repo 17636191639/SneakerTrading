@@ -30,7 +30,7 @@ void MsgProc::run()
             //解析msg
             parseUserAsk(msg);
         }
-        //msleep(20);
+        msleep(20);
     }
 }
 void MsgProc::parseUserAsk(QString msg)
@@ -70,6 +70,7 @@ void MsgProc::parseBuyerGetShoes(QString data)
     {
         QString msg = QString(CMD_GetShoes_T) + QString("#?|") + buyerID + QString("|") + QString("无商品！");
         emit signalSendMsgToClient(buyerID, msg);
+
     }
 
 
@@ -104,6 +105,7 @@ void MsgProc::parseBuyerGetShoesPhoto(QString data)
 //                //+ QString("&") + imageData;
 
         emit signalSendPhotoToClient(buyerID);
+
     }else
     {
         QString msg = QString(CMD_GetShoesPhoto_A) + QString("#?|") + buyerID + QString("|") + QString("无图片信息！");

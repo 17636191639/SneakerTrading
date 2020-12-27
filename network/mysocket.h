@@ -23,8 +23,9 @@ public:
     QString m_localUid;
 
 private:
-    quint16 m_tcpBlockSize;
+    quint32 m_tcpBlockSize;
     QTcpSocket *m_socket;
+    QByteArray m_byte;
 
     void parseUserLogin(QString msg);
     void parseUserExit(QString msg);

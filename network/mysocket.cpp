@@ -22,35 +22,63 @@ MySocket::~MySocket()
 }
 void MySocket::slotReadyRead()
 {
-    QDataStream in(m_socket);
-    in.setVersion(QDataStream::Qt_4_6);
-
-    if(m_tcpBlockSize == 0)
+    if(m_socket->bytesAvailable() == 65536)  //接受数据满包说明没发完
     {
-        if(m_socket->bytesAvailable() < sizeof(quint16))
-            return;
-
-        in >> m_tcpBlockSize;
-    }
-
-    if(m_socket->bytesAvailable() < m_tcpBlockSize)
-        return;
-
-    QString msg;
-    in >> msg;
-
-    if(msg.at(0) == CMD_UserLogin_L)
-    {
-        parseUserLogin(msg);
-    }else if(msg.at(0) == CMD_UserExit_X)
-    {
-        parseUserExit(msg);
+        m_byte.append(m_socket->readAll());
     }else
     {
-        GlobalVars::g_msgQueue.enqueue(msg);
-        qDebug() << "g_msgQueue.enqueue: " << msg;
+        m_byte.append(m_socket->readAll());
+
+
+
+        //int bagSize = 0;
+        //bool isFirst = true;
+        //处理粘包
+        int readSize = 0;
+        QByteArray tempByte = m_byte;
+        while(m_byte.size() - readSize)
+        {
+            QDataStream in(tempByte);
+            in.setVersion(QDataStream::Qt_4_6);
+
+            if(m_tcpBlockSize == 0)
+            {
+                if(tempByte.size() < sizeof(quint32))
+                {
+                    return;
+                }
+                in >> m_tcpBlockSize;  //获取数据的长度
+            }
+            //处理半包   数据只接受了一半  跳出函数继续接受
+
+            if(tempByte.size() - sizeof(quint32) < m_tcpBlockSize) //总接受大小-2个字节就是数据大小
+            {
+                return;
+            }
+            //qDebug() << "当前处理数据包大小：" << tempByte.size();
+            QString msg;
+            in >> msg;
+            qDebug() << "Client Recv: " << msg;
+
+
+            if(msg.at(0) == CMD_UserLogin_L)  //登录
+            {
+                parseUserLogin(msg);
+            }else if(msg.at(0) == CMD_UserExit_X)  //退出登录
+            {
+                parseUserExit(msg);
+            }else
+            {
+                GlobalVars::g_msgQueue.enqueue(msg);  //进入消息队列
+            }
+            readSize += m_tcpBlockSize + sizeof(quint32);
+            //qDebug() << "占位符大小：" << m_tcpBlockSize << "已读数据" << readSize;
+            tempByte = m_byte.right(m_byte.size() - readSize);
+            m_tcpBlockSize = 0;
+        }
+        m_byte.clear();
     }
-    m_tcpBlockSize = 0;
+
 }
 
 
@@ -93,10 +121,10 @@ bool MySocket::slotSendMsg(QString msg)
     QDataStream out(&buffer, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_6);
 
-    out << (quint16)0;
+    out << (quint32)0;
     out << msg;
     out.device()->seek(0);
-    out << (quint16)(buffer.size() - sizeof(quint16));
+    out << (quint32)(buffer.size() - sizeof(quint32));
 
     qDebug() << "Server Send: " << msg;
     return m_socket->write(buffer);
@@ -112,16 +140,15 @@ bool MySocket::slotSendPhoto(void)
     QString imgPath = GlobalVars::g_photoInfoList->at(0).getPhotoPath() +
                                     GlobalVars::g_photoInfoList->at(0).getID() + QString(" (1).jpg");
     QImage img;
-    bool loadImg = img.load(imgPath);
 
-    if(loadImg)
+    if(img.load(imgPath))
     {
         qDebug() << "img size: " << img.size();
         QByteArray buffer;
         QDataStream out(&buffer, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_4_6);
 
-        out << (quint16)0;
+        out << (quint32)0;
         out << msg;  //将命令流入
 
 
@@ -132,7 +159,7 @@ bool MySocket::slotSendPhoto(void)
         out << b.data();
 
         out.device()->seek(0);
-        out << (quint16)(buffer.size() - sizeof(quint16));  //将数据大小流入
+        out << (quint32)(buffer.size() - sizeof(quint32));  //将数据大小流入
         qDebug() << "buffer size：" << buffer.size();
         qDebug() << "photo size: " << b.size();
         m_socket->write(buffer);

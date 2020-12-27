@@ -25,6 +25,7 @@ protected:
 private:
     bool m_isExit;
     MyServer *m_server;
+
     ///解析命令函数
     void parseUserAsk(QString msg);/////协议解析
     //解析买家协议
