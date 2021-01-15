@@ -614,8 +614,15 @@ void ExecSQL::deleteShopCart(QString id)
     QString DeleteSQL = Delete.arg(id);
     updateShopCartInfoList(DeleteSQL);
 }
+
+void ExecSQL::selectShopCartInfoForIDAndDetailsID(QString id, QString detailsID)
+{
+    QString sql = QString("select * from shop_cart where id = '%1' and detail_id = '%2'");
+    QString exSQL = sql.arg(id).arg(detailsID);
+    updateShopCartInfoList(exSQL);
+}
 //////////////////////////////////////// Order ////////////////////////////////////////////////////////////////
-void ExecSQL::updateOrderInfoList(QString sql)
+bool ExecSQL::updateOrderInfoList(QString sql)
 {
     GlobalVars::g_orderInfoList->clear();
 
@@ -646,9 +653,11 @@ void ExecSQL::updateOrderInfoList(QString sql)
             OrderInfo info(id, buyerID, detailID, count, state, createDate, deliveryDate, finishDate);
             GlobalVars::g_orderInfoList->append(info);
         }
+        return true;
     }else
     {
         qDebug() << "执行语句失败";
+        return false;
     }
 }
 void ExecSQL::selectAllOrders(void)
@@ -750,12 +759,13 @@ void ExecSQL::modifyOrderInfoFinishDate(QString id, QString detailID, QString bu
     updateOrderInfoList(mysql);
 }
 
-void ExecSQL::insertOrderInfo(OrderInfo info)
+bool ExecSQL::insertOrderInfo(OrderInfo info)
 {
     QString insert = QString("insert into order_info values('%1','%2','%3','%4','%5','%6','%7','%8')");
     QString insertSQL = insert.arg(info.getID()).arg(info.getBuyID()).arg(info.getDetailID()).arg(info.getCount())
             .arg(info.getState()).arg(info.getCreateDate()).arg(info.getDeliveryDate()).arg(info.getFinishDate());
-    updateOrderInfoList(insertSQL);
+
+    return  updateOrderInfoList(insertSQL);
 }
 void ExecSQL::deleteOrderInfo(QString id)
 {

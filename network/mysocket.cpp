@@ -58,7 +58,7 @@ void MySocket::slotReadyRead()
             //qDebug() << "当前处理数据包大小：" << tempByte.size();
             QString msg;
             in >> msg;
-            qDebug() << "Client Recv: " << msg;
+            qDebug() << "Server Recv: " << msg;
 
 
             if(msg.at(0) == CMD_UserLogin_L)  //登录
@@ -129,42 +129,69 @@ bool MySocket::slotSendMsg(QString msg)
     qDebug() << "Server Send: " << msg;
     return m_socket->write(buffer);
 }
-bool MySocket::slotSendPhoto(void)
+bool MySocket::slotSendPhoto(bool isAll)
 {
+    QByteArray buffer;
+    QDataStream out(&buffer, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_4_6);
 
     QString msg = QString(CMD_GetShoesPhoto_A) + QString("#!");   //合成消息
     msg += QString("|")
             + GlobalVars::g_photoInfoList->at(0).getID()
             + QString("&") + GlobalVars::g_photoInfoList->at(0).getPhotoCount()
-            + QString("&") + GlobalVars::g_photoInfoList->at(0).getPhotoPath();
-    QString imgPath = GlobalVars::g_photoInfoList->at(0).getPhotoPath() +
-                                    GlobalVars::g_photoInfoList->at(0).getID() + QString(" (1).jpg");
-    QImage img;
-
-    if(img.load(imgPath))
+            + QString("&") + GlobalVars::g_photoInfoList->at(0).getPhotoPath()
+            + QString("&");
+    if(isAll)
     {
-        qDebug() << "img size: " << img.size();
-        QByteArray buffer;
-        QDataStream out(&buffer, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_4_6);
-
+        msg += QString("true");
         out << (quint32)0;
         out << msg;  //将命令流入
+        qDebug() << "send all photo cmd: " << msg;
+        for(int i = 0; i < GlobalVars::g_photoInfoList->at(0).getPhotoCount().toInt(); i++)
+        {
+            QString imgPath = GlobalVars::g_photoInfoList->at(0).getPhotoPath() +
+                                            GlobalVars::g_photoInfoList->at(0).getID() + QString(" (%1).jpg");
+            QImage img;
+            imgPath = imgPath.arg(i + 1);
+            if(img.load(imgPath))
+            {
+                qDebug() << "img size: " << img.size();
+
+                QBuffer b;
+                b.open(QIODevice::ReadWrite);
+                img.save(&b,"jpg");
+
+                out << b.data();
+
+            }
+        }
+    }else
+    {
+        msg += QString("false");
+        out << (quint32)0;
+        out << msg;  //将命令流入
+        qDebug() << "send one photo cmd: " << msg;
+        QString imgPath = GlobalVars::g_photoInfoList->at(0).getPhotoPath() +
+                                        GlobalVars::g_photoInfoList->at(0).getID() + QString(" (1).jpg");
+        QImage img;
+
+        if(img.load(imgPath))
+        {
+            qDebug() << "img size: " << img.size();
 
 
-        QBuffer b;
-        b.open(QIODevice::ReadWrite);
-        img.save(&b,"jpg");
 
-        out << b.data();
+            QBuffer b;
+            b.open(QIODevice::ReadWrite);
+            img.save(&b,"jpg");
 
-        out.device()->seek(0);
-        out << (quint32)(buffer.size() - sizeof(quint32));  //将数据大小流入
-        qDebug() << "buffer size：" << buffer.size();
-        qDebug() << "photo size: " << b.size();
-        m_socket->write(buffer);
+            out << b.data();
+        }
     }
 
-
+    out.device()->seek(0);
+    out << (quint32)(buffer.size() - sizeof(quint32));  //将数据大小流入
+    qDebug() << "send buffer size：" << buffer.size();
+    m_socket->write(buffer);
 
 }

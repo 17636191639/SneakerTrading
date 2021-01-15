@@ -10,8 +10,6 @@ MsgProc::MsgProc(QObject *parent) :
     QThread(parent)
 {
     m_server = new MyServer;
-//        connect(this, SIGNAL(signalSendMsgToClient(QString,QString)),
-//                this, SLOT(slotSendMsgToClient(QString,QString)));
     m_isExit = false;
 }
 
@@ -40,10 +38,21 @@ void MsgProc::parseUserAsk(QString msg)
     switch (cmd)
     {
     ///通用请求命令
-    //case CMD_UserLogin_L: parseUserLogin(list.at(1)); break;
+
     //解析买家命令
     case CMD_GetShoes_T: parseBuyerGetShoes(list.at(1)); break;
     case CMD_GetShoesPhoto_A:parseBuyerGetShoesPhoto(list.at(1)); break;
+    case CMD_GetShoesDetails_F:parseBuyerGetShoesDetails(list.at(1));break;
+    case CMD_ViewShopCart_P:parseBuyerViewShopCart(list.at(1));break;
+    case CMD_GetShoesDetailFromDetailsID_f:parseBuyerGetShoesDetailsFromDetailsID(list.at(1));break;
+    case CMD_GetOrder_O:parseBuyerGetOrder(list.at(1));break;
+    case CMD_GetShoesDetailByOrder_o:parseBuyerGetShoesDetailsByOrder(list.at(1));break;
+    case CMD_CommitOrderInfo_c:parsaeBuyerCommitOrderInfo(list.at(1));break;
+    case CMD_AddToShopCart_p:parseBuyerAddToShopCart(list.at(1));break;
+    case CMD_GetBuyerInfo_B:parseBuyerGetBuyerInfo(list.at(1));break;
+    //解析卖家命令
+
+
     default:
         break;
     }
@@ -80,31 +89,23 @@ void MsgProc::parseBuyerGetShoesPhoto(QString data)
     QStringList list = data.split("|");
     QString buyerID = list.at(0);
     QString photoID = list.at(1);
+    QString isAllPhoto = list.at(2);
     ExecSQL::selectPhotoInfoForID(photoID);
     if(!GlobalVars::g_photoInfoList->isEmpty())
     {
-//        QString imgPath = GlobalVars::g_photoInfoList->at(0).getPhotoPath() +
-//                                GlobalVars::g_photoInfoList->at(0).getID() + QString(" (1).jpg"); //获取要发送的图片路径
-//        QImage image(imgPath);
-//        QByteArray imgByteArray;
-//        QBuffer buf(&imgByteArray);
-//        image.save(&buf, "jpg");
-//        QByteArray hexed = imgByteArray.toBase64();
-//        buf.close();
-//        QString strImage(hexed);
-//        qDebug() << strImage;
-// 将图片转失败，暂时无法使用此方法
-//        QImage img(imgPath);
-//        QString imageData = getImageData(img);     //将要发送的图片转换成字符
-//        qDebug() << "图片信息： " << imageData;
-//        QString msg = QString(CMD_GetShoesPhoto_A) + QString("#!");   //合成消息
-//        msg += QString("|")
-//                + GlobalVars::g_photoInfoList->at(0).getID()
-//                + QString("&") + GlobalVars::g_photoInfoList->at(0).getPhotoCount()
-//                + QString("&") + GlobalVars::g_photoInfoList->at(0).getPhotoPath();
-//                //+ QString("&") + imageData;
+        if(isAllPhoto == "true")
+        {
+            emit signalSendPhotoToClient(buyerID, true);
+        }else if(isAllPhoto == "false")
+        {
+            emit signalSendPhotoToClient(buyerID, false);
+        }else
+        {
+            QString msg = QString(CMD_GetShoesPhoto_A) + QString("#?|") + buyerID + QString("|") + QString("图片申请指令错误！");
+            emit signalSendMsgToClient(buyerID, msg);
+        }
 
-        emit signalSendPhotoToClient(buyerID);
+
 
     }else
     {
@@ -112,7 +113,37 @@ void MsgProc::parseBuyerGetShoesPhoto(QString data)
         emit signalSendMsgToClient(buyerID, msg);
     }
 }
+void MsgProc::parseBuyerGetShoesDetails(QString data)
+{
+    //处理 MH-xxx|SH-xxxx  获取某一商品详情
+    QStringList list = data.split("|");
+    QString buyerID = list.at(0);
+    QString shoesID = list.at(1);
 
+    ExecSQL::selectShoesDetailsForShoesID(shoesID); //根据客户端的商品ID查找相关商品
+    if(!GlobalVars::g_shoesDetailsList->isEmpty())
+    {
+        QString msg = QString(CMD_GetShoesDetails_F) + QString("#!|") + buyerID;
+        for(int i = 0; i < GlobalVars::g_shoesDetailsList->count(); i++)
+        {
+            msg += QString("|")
+                    + GlobalVars::g_shoesDetailsList->at(i).getID()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getShoesID()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getPhotoID()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getSize()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getColor()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getPrice()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getStock();
+
+        }
+        emit signalSendMsgToClient(buyerID, msg);
+    }else
+    {
+        QString msg = QString(CMD_GetShoesDetails_F) + QString("#?|") + buyerID + QString("|") + QString("无详情信息！");
+        emit signalSendMsgToClient(buyerID, msg);
+    }
+
+}
 
 QByteArray MsgProc::getImageData(const QImage &image)  //将图片转换成base64字符串
 {
@@ -122,4 +153,175 @@ QByteArray MsgProc::getImageData(const QImage &image)  //将图片转换成base6
     imageData = imageData.toBase64();
 
     return imageData;
+}
+void MsgProc::parseBuyerViewShopCart(QString buyerID)
+{
+    //处理P#buyerID
+    ExecSQL::selectShopCartInfoForID(buyerID);
+    if(!GlobalVars::g_shopCartList->isEmpty())
+    {
+        QString msg = QString(CMD_ViewShopCart_P) + QString("#!");
+        for(int i = 0; i < GlobalVars::g_shopCartList->count(); i++)
+        {
+            msg += QString("|")
+                    + GlobalVars::g_shopCartList->at(i).getID()
+                    + QString("&") + GlobalVars::g_shopCartList->at(i).getDetailID()
+                    + QString("&") + GlobalVars::g_shopCartList->at(i).getCount();
+        }
+        emit signalSendMsgToClient(buyerID, msg);
+    }else
+    {
+        QString msg = QString(CMD_ViewShopCart_P) + QString("#?") + buyerID + QString("没有查询到相关信息");
+        emit signalSendMsgToClient(buyerID, msg);
+    }
+
+}
+void MsgProc::parseBuyerGetShoesDetailsFromDetailsID(QString date)
+{
+    //处理buyerid|shoesDetailsID}
+    QStringList list = date.split("|");
+    QString buyerID = list.at(0);
+    QString shoesDetailsID = list.at(1);
+    ExecSQL::selectShoesDetailsForID(shoesDetailsID);
+    if(!GlobalVars::g_shoesDetailsList->isEmpty())
+    {
+        QString msg = QString(CMD_GetShoesDetailFromDetailsID_f) + QString("#!|") + buyerID;
+        for(int i = 0; i < GlobalVars::g_shoesDetailsList->count(); i++)
+        {
+            msg += QString("|")
+                    + GlobalVars::g_shoesDetailsList->at(i).getID()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getShoesID()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getPhotoID()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getSize()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getColor()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getPrice()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getStock();
+        }
+        emit signalSendMsgToClient(buyerID, msg);
+    }else
+    {
+        QString msg = QString(CMD_GetShoesDetailFromDetailsID_f) + QString("#?") + buyerID + QString("没有查询到相关信息");
+        emit signalSendMsgToClient(buyerID, msg);
+    }
+
+}
+void MsgProc::parseBuyerGetOrder(QString buyerID)
+{
+    //处理buyerid
+
+    ExecSQL::selectOrderInfoForBuyerID(buyerID);
+    if(!GlobalVars::g_orderInfoList->isEmpty())
+    {
+        QString msg = QString(CMD_GetOrder_O) + QString("#!|") + buyerID;
+        for(int i = 0; i < GlobalVars::g_orderInfoList->count(); i++)
+        {
+            msg += QString("|")
+                    + GlobalVars::g_orderInfoList->at(i).getID()
+                    + QString("&") + GlobalVars::g_orderInfoList->at(i).getBuyID()
+                    + QString("&") + GlobalVars::g_orderInfoList->at(i).getDetailID()
+                    + QString("&") + GlobalVars::g_orderInfoList->at(i).getCount()
+                    + QString("&") + GlobalVars::g_orderInfoList->at(i).getState()
+                    + QString("&") + GlobalVars::g_orderInfoList->at(i).getCreateDate()
+                    + QString("&") + GlobalVars::g_orderInfoList->at(i).getDeliveryDate()
+                    + QString("&") + GlobalVars::g_orderInfoList->at(i).getFinishDate();
+        }
+        emit signalSendMsgToClient(buyerID, msg);
+    }else
+    {
+        QString msg = QString(CMD_GetOrder_O) + QString("#?") + buyerID + QString("没有查询到相关信息");
+        emit signalSendMsgToClient(buyerID, msg);
+    }
+
+}
+void MsgProc::parseBuyerGetShoesDetailsByOrder(QString data)
+{
+    ////处理buyerid|orderID|shoesDetailsID}    CMD_GetShoesDetailByOrder_o
+    QStringList list = data.split("|");
+    QString buyerID = list.at(0);
+    QString orderID = list.at(1);
+    QString shoesDetailsID = list.at(2);
+    ExecSQL::selectShoesDetailsForID(shoesDetailsID);
+    if(!GlobalVars::g_shoesDetailsList->isEmpty())
+    {
+        QString msg = QString(CMD_GetShoesDetailByOrder_o) + QString("#!|") + buyerID + QString("|") + orderID;
+        for(int i = 0; i < GlobalVars::g_shoesDetailsList->count(); i++)
+        {
+            msg += QString("|")
+                    + GlobalVars::g_shoesDetailsList->at(i).getID()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getShoesID()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getPhotoID()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getSize()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getColor()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getPrice()
+                    + QString("&") + GlobalVars::g_shoesDetailsList->at(i).getStock();
+        }
+        emit signalSendMsgToClient(buyerID, msg);
+    }else
+    {
+        QString msg = QString(CMD_GetShoesDetailByOrder_o) + QString("#?") + buyerID + QString("没有查询到相关信息");
+        emit signalSendMsgToClient(buyerID, msg);
+    }
+}
+void MsgProc::parsaeBuyerCommitOrderInfo(QString data)
+{
+    //c# MH-011|O-20210113203946&MH-011&D-0001&1&已付款&2021-01-13 20:39:46&null&null
+    QStringList list = data.split("|");
+    QString buyerID = list.at(0);
+    QString orderInfo = list.at(1);
+
+    QStringList infoList = orderInfo.split("&");
+    OrderInfo info(infoList.at(0), infoList.at(1), infoList.at(2), infoList.at(3), infoList.at(4), infoList.at(5), infoList.at(6), infoList.at(7));
+    if(ExecSQL::insertOrderInfo(info))
+    {
+        QString msg = QString(CMD_CommitOrderInfo_c) + QString("#!|") + buyerID;
+        emit signalSendMsgToClient(buyerID, msg);
+    }else
+    {
+        QString msg = QString(CMD_CommitOrderInfo_c) + QString("#?|") + buyerID + QString("|订单提交失败！");
+        emit signalSendMsgToClient(buyerID, msg);
+
+    }
+}
+void MsgProc::parseBuyerAddToShopCart(QString data)
+{
+    //{A#  buyerid|shopCartInfo}
+    QStringList list = data.split("|");
+    QString buyerID = list.at(0);
+    QString shopCartInfo = list.at(1);
+    QStringList infoList = shopCartInfo.split("&");
+    ShopCart info(infoList.at(0), infoList.at(1), infoList.at(2));
+
+    ExecSQL::selectShopCartInfoForIDAndDetailsID(info.getID(),info.getDetailID());
+    if(GlobalVars::g_shopCartList->isEmpty())
+    {
+        ExecSQL::insertShopCart(info);
+        QString msg = QString(CMD_AddToShopCart_p) + QString("#!|") + buyerID + QString("|添加购物车成功！");
+        emit signalSendMsgToClient(buyerID, msg);
+    }else
+    {
+        QString count = QString::number(GlobalVars::g_shopCartList->at(0).getCount().toInt() + info.getCount().toInt());
+        ExecSQL::modifyShopCartInfoCount(info.getID(), info.getDetailID(), count);
+        QString msg = QString(CMD_AddToShopCart_p) + QString("#!|") + buyerID + QString("|购物车商品数量增加！");
+        emit signalSendMsgToClient(buyerID, msg);
+    }
+    //ExecSQL::insertShopCart()
+}
+void MsgProc::parseBuyerGetBuyerInfo(QString buyerID)
+{
+    //B#MH-011
+    ExecSQL::selectBuyerInfoForID(buyerID);
+    if(!GlobalVars::g_buyerInfoList->isEmpty())
+    {
+        QString sendMsg = QString(CMD_GetBuyerInfo_B) + QString("#!|") + buyerID +QString("|") +
+                GlobalVars::g_buyerInfoList->at(0).getID() + QString("&") +
+                GlobalVars::g_buyerInfoList->at(0).getName() + QString("&") +
+                GlobalVars::g_buyerInfoList->at(0).getTel() + QString("&") +
+                GlobalVars::g_buyerInfoList->at(0).getAddress();
+        emit signalSendMsgToClient(buyerID, sendMsg);
+    }else
+    {
+        QString sendMsg = QString(CMD_GetBuyerInfo_B) + QString("#?|") + buyerID +QString("|") + QString("未查找到相关用户信息");
+        emit signalSendMsgToClient(buyerID, sendMsg);
+    }
+
 }

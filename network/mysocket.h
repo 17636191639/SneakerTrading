@@ -14,7 +14,7 @@ signals:
 public slots:
     void slotReadyRead();
     bool slotSendMsg(QString msg);
-    bool slotSendPhoto(void);
+    bool slotSendPhoto(bool);
 
 public:
     explicit MySocket(QTcpSocket *socket, QObject *parent = 0);

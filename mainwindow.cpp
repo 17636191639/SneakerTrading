@@ -24,8 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_myProc = new MsgProc;
     connect(m_myProc, SIGNAL(signalSendMsgToClient(QString,QString)),
             this, SLOT(slotSendMsgToClient(QString,QString)));
-    connect(m_myProc, SIGNAL(signalSendPhotoToClient(QString)),
-            this, SLOT(slotSendPhotoToClient(QString)));
+    connect(m_myProc, SIGNAL(signalSendPhotoToClient(QString, bool)),
+            this, SLOT(slotSendPhotoToClient(QString, bool)));
     m_myProc->start();
 
     menuBar()->hide();
@@ -364,11 +364,11 @@ void MainWindow::slotSendMsgToClient(QString id, QString msg)
 
 
 }
-void MainWindow::slotSendPhotoToClient(QString id)
+void MainWindow::slotSendPhotoToClient(QString id, bool isALL)
 {
     if(GlobalVars::m_socketMap.contains(id))
     {
-        GlobalVars::m_socketMap[id]->slotSendPhoto();
+        GlobalVars::m_socketMap[id]->slotSendPhoto(isALL);
     }
 
 }

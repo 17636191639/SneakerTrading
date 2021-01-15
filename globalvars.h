@@ -33,6 +33,12 @@ enum COMMAND{
     CMD_ViewEvaluation_W = 'W',         //评价信息
     CMD_UploadEvaluation_U = 'U',         //上传评价
     CMD_GetShoesPhoto_A = 'A',
+    CMD_GetShoesDetails_F = 'F',
+    CMD_GetShoesDetailFromDetailsID_f = 'f', //通过商品详情ID获取商品详情
+    CMD_GetShoesDetailByOrder_o = 'o',//通过订单信息获取商品详情
+    CMD_CommitOrderInfo_c = 'c',  //客户端提交订单
+    CMD_AddToShopCart_p = 'p',   //添加购物车
+    CMD_GetBuyerInfo_B = 'B', //获取买家个人信息
     ///卖家请求命令
     CMD_GetShoesInfo_G = 'G',    //商品信息
     CMD_NewShoes_N = 'N',        //上架商品

@@ -112,8 +112,9 @@ public:
 
     static void insertShopCart(ShopCart info);
     static void deleteShopCart(QString id);
+    static void selectShopCartInfoForIDAndDetailsID(QString id, QString detailsID);
 //////////////////////////  Order ////////////////////////
-    static void updateOrderInfoList(QString sql);
+    static bool updateOrderInfoList(QString sql);
     static void selectAllOrders(void);
 
     static void selectOrderInfoForID(QString id);
@@ -133,7 +134,7 @@ public:
     static void modifyOrderInfoDeliveryDate(QString id, QString detailID, QString buyerID, QString DeliveryDate);
     static void modifyOrderInfoFinishDate(QString id, QString detailID, QString buyerID, QString FinishDate);
 
-    static void insertOrderInfo(OrderInfo info);
+    static bool insertOrderInfo(OrderInfo info);
     static void deleteOrderInfo(QString id);
 
 /////////////////////////// Shoes Details /////////////////////////////

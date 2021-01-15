@@ -29,7 +29,7 @@ public:
     ~MainWindow();
 public slots:
     void slotSendMsgToClient(QString id, QString msg);
-    void slotSendPhotoToClient(QString id);
+    void slotSendPhotoToClient(QString id, bool isALL);
 private slots:
     void on_actionShoesMS_triggered();
 
